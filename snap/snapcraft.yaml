@@ -88,11 +88,13 @@ parts:
       - libasound2-data
       - libasyncns0
       - libflac8
+      - libgomp1
       - libltdl7
       - libogg0
       - libsbc1
       - libsnapd-glib1
       - libsndfile1
+      - libsoxr0
       - libspeexdsp1
       - libtdb1
       - libvorbis0a
@@ -140,6 +142,7 @@ parts:
         - usr/lib/pulse-13.99/*
         - usr/lib/pulseaudio/*.so
         - usr/lib/*/libasound*
+        - usr/lib/*/libgomp*
         - usr/lib/*/libltdl*
         - usr/lib/*/libsndfile*
         - usr/lib/*/liborc*
@@ -150,6 +153,7 @@ parts:
         - usr/lib/*/libFLAC*
         - usr/lib/*/libvorbis*
         - usr/lib/*/libogg*
+        - usr/lib/*/libsoxr*
         - usr/share/alsa/*
         - usr/share/doc/libasound2*
         - usr/share/doc/libltdl*
