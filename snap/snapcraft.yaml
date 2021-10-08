@@ -15,25 +15,23 @@ apps:
     command: bin/pulseaudio
     daemon: simple
     plugs: [network, network-bind, bluez, hardware-observe, alsa]
-    slots: [service, audio-playback, audio-record]
+    slots: [audio-playback, audio-record]
   pactl:
     command-chain: [bin/client-wrapper]
     command: usr/bin/pactl
-    plugs: [client, playback, record, network]
+    plugs: [playback, record, network]
   paplay:
     command-chain: [bin/client-wrapper]
     command: usr/bin/paplay
-    plugs: [client, playback, home, network]
+    plugs: [playback, home, network]
   parec:
     command-chain: [bin/client-wrapper]
     command: usr/bin/parec
-    plugs: [client, playback, record, home, network]
+    plugs: [playback, record, home, network]
   config:
     command: bin/config
 
 plugs:
-  client:
-    interface: pulseaudio
   playback:
     interface: audio-playback
   record:
