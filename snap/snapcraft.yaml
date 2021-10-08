@@ -121,7 +121,7 @@ parts:
       - --disable-x11
       - --with-system-user=root
       - --with-system-group=root
-    override-build:
+    override-build: |
       snapcraftctl build
       VER=$(grep PACKAGE_VERSION= ./configure|sed "s/^.*=//;s/'//g")
       snapcraftctl set-version $VER
