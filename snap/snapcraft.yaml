@@ -47,7 +47,7 @@ layout:
   /usr/share/alsa:
     symlink: $SNAP/usr/share/alsa
   /usr/share/applications:
-    symlink: $SNAP/usr/share/applications
+    bind: $SNAP/usr/share/applications
 
 parts:
 
