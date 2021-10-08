@@ -2,9 +2,9 @@ name: pulse-server
 version: 8.0-4-dev
 summary: PulseAudio sound server
 description: |
-  This pulseaudios sound server snap is created for use on an Ubuntu Core
+  This pulseaudio sound server snap is created for use on an Ubuntu Core
   device to provide audio record and playback capabilities via the
-  respectiv snap interfaces.
+  respective snap interfaces.
 
 grade: stable
 confinement: strict
