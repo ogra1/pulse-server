@@ -1,0 +1,163 @@
+name: pulse-server
+version: 8.0-4-dev
+summary: PulseAudio sound server
+description: |
+  This pulseaudios sound server snap is created for use on an Ubuntu Core
+  device to provide audio record and playback capabilities via the
+  respectiv snap interfaces.
+
+grade: stable
+confinement: strict
+base: core20
+
+apps:
+  pulseaudio:
+    command: bin/pulseaudio
+    daemon: simple
+    plugs: [network, network-bind, bluez, hardware-observe, alsa]
+    slots: [service, audio-playback, audio-record]
+  pactl:
+    command-chain: [bin/client-wrapper]
+    command: usr/bin/pactl
+    plugs: [client, playback, record, network]
+  paplay:
+    command-chain: [bin/client-wrapper]
+    command: usr/bin/paplay
+    plugs: [client, playback, home, network]
+  parec:
+    command-chain: [bin/client-wrapper]
+    command: usr/bin/parec
+    plugs: [client, playback, record, home, network]
+  config:
+    command: bin/config
+
+plugs:
+  client:
+    interface: pulseaudio
+  playback:
+    interface: audio-playback
+  record:
+    interface: audio-record
+
+layout:
+  /var/lib/pulse:
+    bind: $SNAP_DATA
+  /usr/lib/pulse-8.0:
+    symlink: $SNAP/usr/lib/pulse-8.0
+  /usr/share/pulseaudio:
+    symlink: $SNAP/usr/share/pulseaudio
+  /usr/share/alsa:
+    symlink: $SNAP/usr/share/alsa
+
+parts:
+
+  pulseaudio-common:
+    source: bin
+    plugin: dump
+    organize:
+      client-wrapper: bin/client-wrapper
+      config: bin/config
+      pulseaudio: bin/pulseaudio
+
+  pulseaudio:
+    plugin: autotools
+    source: https://git.launchpad.net/ubuntu/+source/pulseaudio
+    source-type: git
+    source-branch: applied/ubuntu/focal-updates
+    source-depth: 1
+    build-packages:
+      - intltool
+      - libapparmor-dev
+      - libasound2-dev
+      - libdbus-1-dev
+      - libjson-c-dev
+      - libglib2.0-dev
+      - libspeexdsp-dev
+      - libbluetooth-dev
+      - libwebrtc-audio-processing-dev
+      - libltdl-dev
+      - libsndfile1-dev
+      - libtdb-dev
+      - libudev-dev
+      - libasyncns-dev
+      - libsbc-dev
+      - libsnapd-glib-dev
+    stage-packages:
+      - libapparmor1
+      - libasound2
+      - libasound2-data
+      - libasyncns0
+      - libflac8
+      - libltdl7
+      - libogg0
+      - libsbc1
+      - libsnapd-glib1
+      - libsndfile1
+      - libspeexdsp1
+      - libtdb1
+      - libvorbis0a
+      - libvorbisenc2
+    autotools-configure-parameters:
+      - --prefix=/usr
+      - --sysconfdir=/etc
+      - --libexec=/usr/lib
+      - --libdir=/usr/lib
+      - --localstatedir=/var
+      - --enable-udev
+      - --disable-rpath
+      - --disable-orc
+      - --disable-gconf
+      - --disable-bluez4
+      - --disable-esound
+      - --disable-adrian-aec
+      - --disable-gtk3
+      - --disable-hal-compat
+      - --disable-systemd-login
+      - --without-caps
+      - --disable-webrtc-aec
+      - --disable-oss-output
+      - --disable-oss-wrapper
+      - --disable-jack
+      - --disable-x11
+      - --with-system-user=root
+      - --with-system-group=root
+    filesets:
+      wanted:
+        - etc/*
+        - lib/*
+        - usr/bin/pacat
+        - usr/bin/pactl
+        - usr/bin/paplay
+        - usr/bin/parec
+        - usr/bin/pulseaudio
+        - usr/lib/libpulse-mainloop-glib.so*
+        - usr/lib/libpulse-simple.so*
+        - usr/lib/libpulse.so*
+        - usr/lib/pulse-8.0/*
+        - usr/lib/pulseaudio/*.so
+        - usr/lib/*/libasound*
+        - usr/lib/*/libltdl*
+        - usr/lib/*/libsndfile*
+        - usr/lib/*/liborc*
+        - usr/lib/*/libsbc*
+        - usr/lib/*/libtdb*
+        - usr/lib/*/libspeexdsp*
+        - usr/lib/*/libasyncns*
+        - usr/lib/*/libFLAC*
+        - usr/lib/*/libvorbis*
+        - usr/lib/*/libogg*
+        - usr/share/alsa/*
+        - usr/share/doc/libasound2*
+        - usr/share/doc/libltdl*
+        - usr/share/doc/libsbc*
+        - usr/share/doc/libsndfile*
+        - usr/share/doc/liborc*
+        - usr/share/doc/libtdb*
+        - usr/share/doc/libspeexdsp*
+        - usr/share/doc/libasyncns*
+        - usr/share/doc/libFLAC*
+        - usr/share/doc/libvorbis*
+        - usr/share/doc/libogg*
+        - usr/share/pulseaudio/*
+    stage:
+      - $wanted

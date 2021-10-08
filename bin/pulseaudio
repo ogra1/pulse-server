@@ -1,0 +1,26 @@
+#!/bin/bash -ex
+
+export PULSE_RUNTIME_PATH=/var/run/pulse
+export PULSE_STATE_PATH=$SNAP_DATA/state
+export ALSA_CONFIG_UCM=$SNAP/usr/share/alsa/ucm
+export ALSA_CONFIG_TPLG=$SNAP/usr/share/alsa/topology
+export ALSA_CONFIG_PATH=$SNAP/usr/share/alsa/alsa.conf
+export ALSA_MIXER_SIMPLE=$SNAP/usr/share/alsa/smixer.conf
+
+mkdir -p "$PULSE_STATE_PATH"
+
+EXTRA_ARGS=()
+
+if [ -e "$SNAP_DATA"/config/debug ] ; then
+    EXTRA_ARGS+=(-vvvv)
+    export LIBASOUND_DEBUG=1
+fi
+
+exec "$SNAP"/usr/bin/pulseaudio \
+    --exit-idle-time=-1 \
+    --disallow-exit=yes \
+    --system \
+    -F "$SNAP"/etc/pulse/default.pa \
+    -p "$SNAP"/usr/lib/pulse-8.0/modules \
+    -n \
+    "${EXTRA_ARGS[@]}"
