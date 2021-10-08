@@ -46,6 +46,8 @@ layout:
     symlink: $SNAP/usr/share/pulseaudio
   /usr/share/alsa:
     symlink: $SNAP/usr/share/alsa
+  /usr/share/applications:
+    symlink: $SNAP/usr/share/applications
 
 parts:
 
@@ -125,6 +127,7 @@ parts:
       snapcraftctl build
       VER=$(grep PACKAGE_VERSION= ./configure|sed "s/^.*=//;s/'//g")
       snapcraftctl set-version $VER
+      mkdir -p $SNAPCRAFT_PART_INSTALL/usr/share/applications
     filesets:
       wanted:
         - etc/*
@@ -164,6 +167,7 @@ parts:
         - usr/share/doc/libFLAC*
         - usr/share/doc/libvorbis*
         - usr/share/doc/libogg*
+        - usr/share/applications
         - usr/share/pulseaudio/*
     stage:
       - $wanted
