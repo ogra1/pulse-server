@@ -1,5 +1,5 @@
 name: pulse-server
-version: 8.0-4-dev
+adopt-info: pulseaudio
 summary: PulseAudio sound server
 description: |
   This pulseaudio sound server snap is created for use on an Ubuntu Core
@@ -42,8 +42,8 @@ plugs:
 layout:
   /var/lib/pulse:
     bind: $SNAP_DATA
-  /usr/lib/pulse-8.0:
-    symlink: $SNAP/usr/lib/pulse-8.0
+  /usr/lib/pulse-13.99:
+    symlink: $SNAP/usr/lib/pulse-13.99
   /usr/share/pulseaudio:
     symlink: $SNAP/usr/share/pulseaudio
   /usr/share/alsa:
@@ -121,6 +121,10 @@ parts:
       - --disable-x11
       - --with-system-user=root
       - --with-system-group=root
+    override-build:
+      snapcraftctl build
+      VER=$(grep PACKAGE_VERSION= ./configure|sed "s/^.*=//;s/'//g")
+      snapcraftctl set-version $VER
     filesets:
       wanted:
         - etc/*
@@ -133,7 +137,7 @@ parts:
         - usr/lib/libpulse-mainloop-glib.so*
         - usr/lib/libpulse-simple.so*
         - usr/lib/libpulse.so*
-        - usr/lib/pulse-8.0/*
+        - usr/lib/pulse-13.99/*
         - usr/lib/pulseaudio/*.so
         - usr/lib/*/libasound*
         - usr/lib/*/libltdl*
