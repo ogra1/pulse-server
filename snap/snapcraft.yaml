@@ -84,6 +84,8 @@ parts:
       - libsbc-dev
       - libsnapd-glib-dev
     stage-packages:
+      - alsa-topology-conf
+      - alsa-ucm-conf
       - libapparmor1
       - libasound2
       - libasound2-data
