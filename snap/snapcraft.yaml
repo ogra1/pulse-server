@@ -148,7 +148,9 @@ parts:
         - usr/lib/libpulse.so*
         - usr/lib/pulse-*.*/*
         - usr/lib/pulseaudio/*.so
+        - usr/lib/*/libapparmor*
         - usr/lib/*/libasound*
+        - usr/lib/*/libglib*
         - usr/lib/*/libgomp*
         - usr/lib/*/libltdl*
         - usr/lib/*/libsndfile*
