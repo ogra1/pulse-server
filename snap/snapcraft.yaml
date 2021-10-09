@@ -15,6 +15,7 @@ apps:
   pulseaudio:
     command: bin/pulseaudio
     daemon: simple
+    install-mode: disable
     plugs: [network, network-bind, bluez, hardware-observe, alsa]
     slots: [audio-playback, audio-record]
   pactl:

@@ -1,0 +1,10 @@
+#! /bin/sh
+
+if ! snapctl is-connected alsa; then
+	logger -t $SNAP_NAME "alsa not connected yet, doing nothing"
+	exit 0
+fi
+
+logger -t $SNAP_NAME "all interfaces connected, starting pulseaudio service"
+
+snapctl start $SNAP_NAME.pulseaudio --enable
