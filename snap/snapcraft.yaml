@@ -92,6 +92,7 @@ parts:
       - libasound2-data
       - libasyncns0
       - libflac8
+      - libglib2.0-0
       - libgomp1
       - libltdl7
       - libogg0
