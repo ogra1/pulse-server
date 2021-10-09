@@ -102,6 +102,7 @@ parts:
       - libsoxr0
       - libspeexdsp1
       - libtdb1
+      - libudev1
       - libvorbis0a
       - libvorbisenc2
     autotools-configure-parameters:
