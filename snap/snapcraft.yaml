@@ -9,6 +9,7 @@ description: |
 grade: stable
 confinement: strict
 base: core20
+compression: lzo
 
 apps:
   pulseaudio:
@@ -140,7 +141,7 @@ parts:
         - usr/lib/libpulse-mainloop-glib.so*
         - usr/lib/libpulse-simple.so*
         - usr/lib/libpulse.so*
-        - usr/lib/pulse-13.99/*
+        - usr/lib/pulse-*.*/*
         - usr/lib/pulseaudio/*.so
         - usr/lib/*/libasound*
         - usr/lib/*/libgomp*
