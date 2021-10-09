@@ -26,7 +26,7 @@ export PULSE_SYSTEM=1
 
 unset XDG_RUNTIME_DIR
 
-export HOME=$SNAP_DATA/home
+export HOME=$SNAP_COMMON/home
 mkdir -p "$HOME"
 
 exec "$@"
