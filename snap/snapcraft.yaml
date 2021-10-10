@@ -91,9 +91,11 @@ parts:
       - libasound2
       - libasound2-data
       - libasyncns0
+      - libbluetooth3
       - libflac8
       - libglib2.0-0
       - libgomp1
+      - libjson-c4
       - libltdl7
       - libogg0
       - libsbc1
@@ -105,6 +107,7 @@ parts:
       - libudev1
       - libvorbis0a
       - libvorbisenc2
+      - libwebrtc-audio-processing1
     autotools-configure-parameters:
       - --prefix=/usr
       - --sysconfdir=/etc
@@ -148,33 +151,27 @@ parts:
         - usr/lib/libpulse.so*
         - usr/lib/pulse-*.*/*
         - usr/lib/pulseaudio/*.so
+        - usr/lib/*/bluetooth
         - usr/lib/*/libapparmor*
         - usr/lib/*/libasound*
+        - usr/lib/*/libasyncns*
+        - usr/lib/*/libbluetooth*
+        - usr/lib/*/libFLAC*
         - usr/lib/*/libglib*
         - usr/lib/*/libgomp*
+        - usr/lib/*/libjson-c*
         - usr/lib/*/libltdl*
-        - usr/lib/*/libsndfile*
+        - usr/lib/*/libogg*
         - usr/lib/*/liborc*
         - usr/lib/*/libsbc*
-        - usr/lib/*/libtdb*
-        - usr/lib/*/libspeexdsp*
-        - usr/lib/*/libasyncns*
-        - usr/lib/*/libFLAC*
-        - usr/lib/*/libvorbis*
-        - usr/lib/*/libogg*
+        - usr/lib/*/libsndfile*
         - usr/lib/*/libsoxr*
+        - usr/lib/*/libspeexdsp*
+        - usr/lib/*/libtdb*
+        - usr/lib/*/libvorbis*
+        - usr/lib/*/libwebrtc_audio_processing.
         - usr/share/alsa/*
-        - usr/share/doc/libasound2*
-        - usr/share/doc/libltdl*
-        - usr/share/doc/libsbc*
-        - usr/share/doc/libsndfile*
-        - usr/share/doc/liborc*
-        - usr/share/doc/libtdb*
-        - usr/share/doc/libspeexdsp*
-        - usr/share/doc/libasyncns*
-        - usr/share/doc/libFLAC*
-        - usr/share/doc/libvorbis*
-        - usr/share/doc/libogg*
+        - usr/share/doc/*/copyright
         - usr/share/applications
         - usr/share/pulseaudio/*
     stage:

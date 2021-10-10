@@ -19,6 +19,8 @@ fi
 
 PA_MODULES="$(ls -d $SNAP/usr/lib/pulse-*)/modules"
 
+sleep 1
+
 exec "$SNAP"/usr/bin/pulseaudio \
     --exit-idle-time=-1 \
     --disallow-exit=yes \
