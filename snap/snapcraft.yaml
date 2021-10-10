@@ -16,20 +16,37 @@ apps:
     command: bin/pulseaudio
     daemon: simple
     install-mode: disable
-    plugs: [network, network-bind, bluez, hardware-observe, alsa]
-    slots: [audio-playback, audio-record]
+    plugs:
+      - alsa
+      - bluez
+      - hardware-observe
+      - network
+      - network-bind
+    slots:
+      - audio-playback
+      - audio-record
   pactl:
     command-chain: [bin/client-wrapper]
     command: usr/bin/pactl
-    plugs: [playback, record, network]
+    plugs:
+      - network
+      - playback
+      - record
   paplay:
     command-chain: [bin/client-wrapper]
     command: usr/bin/paplay
-    plugs: [playback, home, network]
+    plugs:
+      - home
+      - network
+      - playback
   parec:
     command-chain: [bin/client-wrapper]
     command: usr/bin/parec
-    plugs: [playback, record, home, network]
+    plugs:
+      - home
+      - network
+      - playback
+      - record
   config:
     command: bin/config
 
