@@ -56,11 +56,27 @@ plugs:
   record:
     interface: audio-record
 
+environment:
+  LD_LIBRARY_PATH: "$SNAP/usr/lib/pulseaudio:$SNAP/usr/lib/alsa-lib"
+  PULSE_RUNTIME_PATH: /var/run/pulse
+  PULSE_STATE_PATH: $SNAP_COMMON/state
+  ALSA_CONFIG_UCM: $SNAP/usr/share/alsa/ucm2
+  ALSA_CONFIG_TPLG: $SNAP/usr/share/alsa/topology
+  ALSA_CONFIG_PATH: $SNAP/usr/share/alsa/alsa.conf
+  ALSA_MIXER_SIMPLE: $SNAP/usr/share/alsa/smixer.conf
+  ALSA_PLUGIN_DIR: $SNAP/usr/lib/alsa-lib
+
 layout:
+  /etc/pulse:
+    bind: $SNAP/etc/pulse
+  /etc/alsa:
+    bind: $SNAP/etc/alsa
   /var/lib/pulse:
     bind: $SNAP_DATA
-  /usr/lib/pulse-13.99:
-    symlink: $SNAP/usr/lib/pulse-13.99
+  /usr/lib/pulse-15.0:
+    symlink: $SNAP/usr/lib/pulse-15.0
+  /usr/lib/alsa-lib:
+    bind: $SNAP/usr/lib/alsa-lib
   /usr/share/pulseaudio:
     symlink: $SNAP/usr/share/pulseaudio
   /usr/share/alsa:
@@ -77,23 +93,31 @@ parts:
       client-wrapper: bin/client-wrapper
       config: bin/config
       pulseaudio: bin/pulseaudio
-
-  pulseaudio:
+  alsa-lib:
     plugin: autotools
-    source: https://git.launchpad.net/ubuntu/+source/pulseaudio
-    source-type: git
-    source-branch: applied/ubuntu/focal-updates
+    source: https://github.com/alsa-project/alsa-lib.git
+    source-tag: v1.2.5.1
+    prime:
+      - -usr/include
+      - -usr/share/aclocal
+      - -usr/lib/lib*.la
+      - -usr/lib/pkgconfig
+  pulseaudio:
+    plugin: meson
+    source: https://github.com/pulseaudio/pulseaudio.git
+    source-tag: v15.0
     source-depth: 1
+    after: [ alsa-lib ]
     build-packages:
+      - check
+      - doxygen
       - intltool
       - libapparmor-dev
-      - libasound2-dev
       - libdbus-1-dev
       - libjson-c-dev
       - libglib2.0-dev
       - libspeexdsp-dev
       - libbluetooth-dev
-      - libwebrtc-audio-processing-dev
       - libltdl-dev
       - libsndfile1-dev
       - libtdb-dev
@@ -101,12 +125,9 @@ parts:
       - libasyncns-dev
       - libsbc-dev
       - libsnapd-glib-dev
+      - libsoxr-dev
     stage-packages:
-      - alsa-topology-conf
-      - alsa-ucm-conf
       - libapparmor1
-      - libasound2
-      - libasound2-data
       - libasyncns0
       - libbluetooth3
       - libflac8
@@ -119,77 +140,71 @@ parts:
       - libsnapd-glib1
       - libsndfile1
       - libsoxr0
+      - libsoxr-lsr0
       - libspeexdsp1
       - libtdb1
       - libudev1
       - libvorbis0a
       - libvorbisenc2
-      - libwebrtc-audio-processing1
-    autotools-configure-parameters:
-      - --prefix=/usr
+    meson-parameters:
+      - --prefix="/usr"
       - --sysconfdir=/etc
       - --libexec=/usr/lib
       - --libdir=/usr/lib
       - --localstatedir=/var
-      - --enable-udev
-      - --disable-rpath
-      - --disable-orc
-      - --disable-gconf
-      - --disable-bluez4
-      - --disable-esound
-      - --disable-adrian-aec
-      - --disable-gtk3
-      - --disable-hal-compat
-      - --disable-systemd-login
-      - --without-caps
-      - --disable-webrtc-aec
-      - --disable-oss-output
-      - --disable-oss-wrapper
-      - --disable-jack
-      - --disable-x11
-      - --with-system-user=root
-      - --with-system-group=root
+      - -Dgstreamer="disabled"
+      - -Dbluez5-gstreamer="disabled"
+      - -Dorc="disabled"
+      - -Dgsettings="disabled"
+      - -Dadrian-aec="false"
+      - -Dgtk="disabled"
+      - -Dhal-compat="false"
+      - -Dwebrtc-aec="disabled"
+      - -Doss-output="disabled"
+      - -Djack="disabled"
+      - -Dx11="disabled"
+      - -Dsystem_user="root"
+      - -Dsystem_group="root"
+      - -Daccess_group="root"
     override-build: |
       snapcraftctl build
-      VER=$(grep PACKAGE_VERSION= ./configure|sed "s/^.*=//;s/'//g")
+      VER=$(cd $SNAPCRAFT_PART_SRC; git tag|sed 's/^v//')
       snapcraftctl set-version $VER
       mkdir -p $SNAPCRAFT_PART_INSTALL/usr/share/applications
-    filesets:
-      wanted:
-        - etc/*
-        - lib/*
-        - usr/bin/pacat
-        - usr/bin/pactl
-        - usr/bin/paplay
-        - usr/bin/parec
-        - usr/bin/pulseaudio
-        - usr/lib/libpulse-mainloop-glib.so*
-        - usr/lib/libpulse-simple.so*
-        - usr/lib/libpulse.so*
-        - usr/lib/pulse-*.*/*
-        - usr/lib/pulseaudio/*.so
-        - usr/lib/*/bluetooth
-        - usr/lib/*/libapparmor*
-        - usr/lib/*/libasound*
-        - usr/lib/*/libasyncns*
-        - usr/lib/*/libbluetooth*
-        - usr/lib/*/libFLAC*
-        - usr/lib/*/libglib*
-        - usr/lib/*/libgomp*
-        - usr/lib/*/libjson-c*
-        - usr/lib/*/libltdl*
-        - usr/lib/*/libogg*
-        - usr/lib/*/liborc*
-        - usr/lib/*/libsbc*
-        - usr/lib/*/libsndfile*
-        - usr/lib/*/libsoxr*
-        - usr/lib/*/libspeexdsp*
-        - usr/lib/*/libtdb*
-        - usr/lib/*/libvorbis*
-        - usr/lib/*/libwebrtc_audio_processing.
-        - usr/share/alsa/*
-        - usr/share/doc/*/copyright
-        - usr/share/applications
-        - usr/share/pulseaudio/*
-    stage:
-      - $wanted
+    override-prime: |
+      snapcraftctl prime
+      find usr/share/doc/ -type f,l ! -name copyright | xargs rm -rf
+    prime:
+      - -usr/include
+      - -usr/share/zsh
+      - -usr/share/bash-completion
+      - -usr/share/man
+      - -usr/share/GConf
+      - -usr/share/lintian
+      - -usr/share/vala
+      - -usr/libexec
+      - -usr/lib/cmake
+      - -usr/lib/pkgconfig
+      - -usr/lib/systemd
+      - -etc/dconf
+  alsa-plugins:
+    plugin: autotools
+    source: https://github.com/alsa-project/alsa-plugins.git
+    source-tag: v1.2.5
+    after: [ pulseaudio, alsa-lib ]
+    autotools-configure-parameters:
+      - --prefix=/usr
+      - --sysconfdir=/etc
+    prime:
+      - -usr/lib/alsa-lib/*.la
+  alsa-ucm:
+    plugin: dump
+    source: https://github.com/alsa-project/alsa-ucm-conf.git
+    source-tag: v1.2.5.1
+    after: [ alsa-plugins ]
+    organize:
+      ucm: usr/share/alsa/ucm
+      ucm2: usr/share/alsa/ucm2
+    prime:
+      - -README.md
+
