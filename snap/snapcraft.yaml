@@ -85,7 +85,6 @@ layout:
     bind: $SNAP/usr/share/applications
 
 parts:
-
   pulseaudio-common:
     source: bin
     plugin: dump
@@ -194,9 +193,19 @@ parts:
     after: [ pulseaudio, alsa-lib ]
     autotools-configure-parameters:
       - --prefix=/usr
-      - --sysconfdir=/etc
+      - --with-alsalconfdir=/etc/alsa/conf.d
+      - --sysconfdir=/etc/alsa/conf.d
     prime:
       - -usr/lib/alsa-lib/*.la
+    override-prime: |
+      snapcraftctl prime
+      # make links relative
+      cd etc/alsa/conf.d
+      for link in $(find . -type l); do
+        newlink=$(readlink $link|sed 's;^/;../../../;')
+        ln -sf $newlink $link
+      done
+      cd -
   alsa-ucm:
     plugin: dump
     source: https://github.com/alsa-project/alsa-ucm-conf.git
